@@ -3,6 +3,13 @@
   
     
     <entry>
+      <title><![CDATA[Struts 2 复习]]></title>
+      <url>%2F2017%2F03%2F21%2FStruts-2-%E5%A4%8D%E4%B9%A0%2F</url>
+      <content type="text"><![CDATA[Struts 2 简介Apache Struts 2是一个用于开发Java EE网络应用程序的开源框架。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts 2 与Struts 1 有很大的不同，它缘起于Apache的WebWork框架，旨在提供相对于Struts1框架的增强和改进，同时保留与Struts1框架类似的结构。但实质是以WebWork为核心。2005年12月，WebWork宣布WebWork 2.2以Apache Struts 2的名义合并至Struts。 Struts 2 原理]]></content>
+    </entry>
+
+    
+    <entry>
       <title><![CDATA[设计模式学习]]></title>
       <url>%2F2017%2F03%2F14%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%AD%A6%E4%B9%A0%2F</url>
       <content type="text"><![CDATA[OO基础 抽象 封装 多态 继承 OO原则 封装变化的 多用组合，少用继承 针对接口编程，不针对实现编程 低耦合，高内聚 对扩展开放，对修改关闭 OO模式模式是历经验证的OO设计经验 策略模式 策略模式定义了算法族，分别封装起来，让它们之间可以相互替换，此模式让算法的变化独立于使用算法的客户。（例子：鸭子飞的行为与叫的行为） 观察者模式 观察者模式定义了对象之间的一对多依赖，当一个对象(主题)改变状态时，它的所有依赖者(观察者)都会收到通知并自动更新。(例子：报社与订阅者之间的关系） 装饰者模式 动态的将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。java库中IO类如FileInputStream(new InputStream())采用此模式。(例子：饮料添加各种调料） 工厂方法模式 定义一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。(各个地方开披萨分店，但各个地方口味不同）]]></content>
