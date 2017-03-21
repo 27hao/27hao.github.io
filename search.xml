@@ -5,7 +5,7 @@
     <entry>
       <title><![CDATA[Struts 2 复习]]></title>
       <url>%2F2017%2F03%2F21%2FStruts-2-%E5%A4%8D%E4%B9%A0%2F</url>
-      <content type="text"><![CDATA[Struts 2 简介Apache Struts 2是一个用于开发Java EE网络应用程序的开源框架。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts 2 与Struts 1 有很大的不同，它缘起于Apache的WebWork框架，旨在提供相对于Struts1框架的增强和改进，同时保留与Struts1框架类似的结构。但实质是以WebWork为核心。2005年12月，WebWork宣布WebWork 2.2以Apache Struts 2的名义合并至Struts。 Struts 2 原理]]></content>
+      <content type="text"><![CDATA[Struts 2 简介Apache Struts 2是一个用于开发Java EE网络应用程序的开源框架。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts 2 与Struts 1 有很大的不同，它缘起于Apache的WebWork框架，旨在提供相对于Struts1框架的增强和改进，同时保留与Struts1框架类似的结构。但实质是以WebWork为核心。2005年12月，WebWork宣布WebWork 2.2以Apache Struts 2的名义合并至Struts。 Struts 2 原理Struts 2 结构图:Struts 2 流程图:]]></content>
     </entry>
 
     
