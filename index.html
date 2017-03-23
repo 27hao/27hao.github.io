@@ -595,7 +595,7 @@
 <p>定义一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。(各个地方开披萨分店，但各个地方口味不同）</p>
 </blockquote>
 <h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><blockquote>
-<p>单例模式就是一个类只能生成一个对象。分为懒汉式（用时生成对象）和饿汉式（类加载时就生成对象），懒汉式线程不安全，饿汉式线程安全。懒汉式可以将获得对象的静态方法变成同步方法（加synchronized关键字）使之成为线程安全。当然这种方式性能不太好，另一种方式是“双重检查加锁”，在判断对象是否生成后再同步。<br>‘’’java<br>if(instance == null){<br>    synchronized (Singleton.class) {<br>        if(instance == null){<br>            instance = new Singleton();<br>        }<br>    }<br>}<br>‘’’</p>
+<p>单例模式就是一个类只能生成一个对象。分为懒汉式（用时生成对象）和饿汉式（类加载时就生成对象），懒汉式线程不安全，饿汉式线程安全。懒汉式可以将获得对象的静态方法变成同步方法（加synchronized关键字）使之成为线程安全。当然这种方式性能不太好，另一种方式是“双重检查加锁”，在判断对象是否生成后再同步。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</div><div class="line">    <span class="keyword">synchronized</span> (Singleton.class) &#123;</div><div class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</div><div class="line">            instance = <span class="keyword">new</span> Singleton();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 </blockquote>
 
           
