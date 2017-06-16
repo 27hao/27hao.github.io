@@ -5,7 +5,7 @@
     <entry>
       <title><![CDATA[Mysql 优化常见命令]]></title>
       <url>%2F2017%2F06%2F16%2FMysql-%E4%BC%98%E5%8C%96%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4%2F</url>
-      <content type="text"><![CDATA[当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。 查看本次连接信息: status 查看服务器提供的状态信息:show [session|global] status Com_select:执行 select 操作的次数，一次查询值累加 1； Com_Insert:执行 insert 操作的次数； Com_update:执行 update 的次数； Com_delete:执行 delete 的次数； Innodb_rows_read:执行 select 查询返回的行数； Innodb_rows_inserted:执行 insert 操作插入的行数; Innodb_rows_updated:执行 update 操作更新的行数； Innodb_rows_deleted:执行 delete操作删除的行数； Com_commit:事务提交次数； Com_rollback:事务回滚的次数；通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。]]></content>
+      <content type="text"><![CDATA[当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。 查看本次连接信息: status 查看服务器提供的状态信息: show [session|global] status Com_select:执行 select 操作的次数，一次查询值累加 1； Com_Insert:执行 insert 操作的次数； Com_update:执行 update 的次数； Com_delete:执行 delete 的次数； Innodb_rows_read:执行 select 查询返回的行数； Innodb_rows_inserted:执行 insert 操作插入的行数; Innodb_rows_updated:执行 update 操作更新的行数； Innodb_rows_deleted:执行 delete操作删除的行数； Com_commit:事务提交次数； Com_rollback:事务回滚的次数；通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。]]></content>
     </entry>
 
     

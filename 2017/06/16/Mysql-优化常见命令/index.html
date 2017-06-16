@@ -89,12 +89,14 @@
 <meta name="description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
 查看本次连接信息:
 status
-查看服务器提供的状态信息:show [session|global] status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
 
 Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
-Com_update:执行 update 的次数；
-C">
+Com_update:执行 update 的次数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql 优化常见命令">
 <meta property="og:url" content="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/index.html">
@@ -102,24 +104,28 @@ C">
 <meta property="og:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
 查看本次连接信息:
 status
-查看服务器提供的状态信息:show [session|global] status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
 
 Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
-Com_update:执行 update 的次数；
-C">
-<meta property="og:updated_time" content="2017-06-16T07:15:17.730Z">
+Com_update:执行 update 的次数">
+<meta property="og:updated_time" content="2017-06-16T07:19:02.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql 优化常见命令">
 <meta name="twitter:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
 查看本次连接信息:
 status
-查看服务器提供的状态信息:show [session|global] status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
 
 Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
-Com_update:执行 update 的次数；
-C">
+Com_update:执行 update 的次数">
 
 
 
@@ -428,7 +434,10 @@ C">
         <p>当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。</p>
 <h1 id="查看本次连接信息"><a href="#查看本次连接信息" class="headerlink" title="查看本次连接信息:"></a>查看本次连接信息:</h1><blockquote>
 <p>status</p>
-<h1 id="查看服务器提供的状态信息"><a href="#查看服务器提供的状态信息" class="headerlink" title="查看服务器提供的状态信息:"></a>查看服务器提供的状态信息:</h1><p>show [session|global] status</p>
+</blockquote>
+<h1 id="查看服务器提供的状态信息"><a href="#查看服务器提供的状态信息" class="headerlink" title="查看服务器提供的状态信息:"></a>查看服务器提供的状态信息:</h1><blockquote>
+<p>show [session|global] status</p>
+</blockquote>
 <ol>
 <li>Com_select:执行 select 操作的次数，一次查询值累加 1；</li>
 <li>Com_Insert:执行 insert 操作的次数；</li>
@@ -441,7 +450,6 @@ C">
 <li>Com_commit:事务提交次数；</li>
 <li>Com_rollback:事务回滚的次数；<br>通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。</li>
 </ol>
-</blockquote>
 
       
     </div>
