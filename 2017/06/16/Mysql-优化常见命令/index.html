@@ -98,7 +98,7 @@ Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
 Com_update:执行 update 的次数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mysql 优化常见命令">
+<meta property="og:title" content="Mysql 优化">
 <meta property="og:url" content="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/index.html">
 <meta property="og:site_name" content="27号's Blog">
 <meta property="og:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
@@ -112,9 +112,9 @@ show [session|global] status
 Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
 Com_update:执行 update 的次数">
-<meta property="og:updated_time" content="2017-06-16T08:33:45.668Z">
+<meta property="og:updated_time" content="2017-06-16T13:58:51.121Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mysql 优化常见命令">
+<meta name="twitter:title" content="Mysql 优化">
 <meta name="twitter:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
 查看本次连接信息:
 status
@@ -159,7 +159,7 @@ Com_update:执行 update 的次数">
 
 
 
-  <title> Mysql 优化常见命令 | 27号's Blog </title>
+  <title> Mysql 优化 | 27号's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -348,7 +348,7 @@ Com_update:执行 update 的次数">
             
             
               
-                Mysql 优化常见命令
+                Mysql 优化
               
             
           </h2>
@@ -363,7 +363,7 @@ Com_update:执行 update 的次数">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-16T14:55:24+08:00">
+              <time title="Дата создания записи" itemprop="dateCreated datePublished" datetime="2017-06-16T14:55:24+08:00">
                 2017-06-16
               </time>
             
@@ -468,6 +468,55 @@ Com_update:执行 update 的次数">
 <h1 id="通过-show-profile-分析-SQL-执行详细时间"><a href="#通过-show-profile-分析-SQL-执行详细时间" class="headerlink" title="通过 show profile 分析 SQL 执行详细时间"></a>通过 show profile 分析 SQL 执行详细时间</h1><blockquote>
 <p>select @@having_profiling; 查看是否支持 profile<br>set profiling=1; 开启 profile 功能<br>show profiles; 查看每个执行的 SQL 语句的 QUERY ID<br>show profile for query id; 查看该语句执行过程中每个状态的消耗时间<br>show profile [all|cpu|block|io|context|switch|page faults]查看在某个资源所耗时间</p>
 </blockquote>
+<h1 id="Mysql-中使用索引的场景"><a href="#Mysql-中使用索引的场景" class="headerlink" title="Mysql 中使用索引的场景"></a>Mysql 中使用索引的场景</h1><ul>
+<li>匹配全值，即对索引中的列都指定具体值。<blockquote>
+<p>select * from table where col1=’xxx’ and col2=’xxx’;其中col1，col2都有索引</p>
+</blockquote>
+</li>
+<li>匹配值的范围查询，对索引的值进行范围查找。<blockquote>
+<p>select * from table where col&gt;=1 and col&lt;=100;</p>
+</blockquote>
+</li>
+<li>匹配最左前缀，仅仅使用索引中的最左边列进行查找，比如 col1+col2+col3 字段的联合索引能被包含 col1,(col1,col2),(col1,col2,col3)的等值查询利用，不能被 col2,col3,(col2,col3)的等值查询利用。<blockquote>
+<p>select <em> from table where col1=’xxx’;<br>select </em> from table where col1=’xxx’ and col2=’xxx’;<br>select * from table where col1=’xxx’ and col2=’xxx’ and col3=’xxx’;</p>
+</blockquote>
+</li>
+<li>仅仅对索引进行查询，当查询的列都在索引的字段中。<blockquote>
+<p>select col1,col2,col3 from table;</p>
+</blockquote>
+</li>
+<li>匹配列前缀，仅仅使用索引的第一列，并且只包含索引第一列的开头部分进行查找。<blockquote>
+<p>select * from table where col like ‘xxxx%’;</p>
+</blockquote>
+</li>
+<li>索引匹配部分精确，其它部分范围匹配。<blockquote>
+<p>select * from table where col1=’xxx’ and col2&gt;=1 and col2&lt;=100;</p>
+</blockquote>
+</li>
+<li>使用 col is null 条件会使用索引<blockquote>
+<p>select * from table where col is null;</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="存在索引但是不能使用索引的场景"><a href="#存在索引但是不能使用索引的场景" class="headerlink" title="存在索引但是不能使用索引的场景"></a>存在索引但是不能使用索引的场景</h1><ul>
+<li>以%开头的like查询不能利用 B-Tree 索引。<blockquote>
+<p>select * from table where col like ‘%xxx’;</p>
+</blockquote>
+</li>
+<li>数据类型出现隐式转换是不会使用索引，特别是列类型为字符串时，一定要用引号引起来。<blockquote>
+<p>select * from table where col=123; 其中col列类型为字符串</p>
+</blockquote>
+</li>
+<li>复合索引中，如果查询条件中不包含索引列的最左部分，不使用索引。<blockquote>
+<p>select * from table where col2=’xxx’ and col3=’xxx’;</p>
+</blockquote>
+</li>
+<li>如果 Mysql 估计使用索引比全表扫描更慢，则不使用索引。</li>
+<li>用 or 分割开的条件，如果 or 前的条件中的列有索引，而后面没有，同样不会使用索引。<blockquote>
+<p>select * from table where col1=’xxx’ or col2=’xxx’;其中 col1 有索引，而 col2 没有索引</p>
+</blockquote>
+</li>
+</ul>
 
       
     </div>
@@ -535,7 +584,7 @@ Com_update:执行 update 的次数">
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2017/06/16/Mysql-优化常见命令/"
-           data-title="Mysql 优化常见命令" data-url="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/">
+           data-title="Mysql 优化" data-url="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/">
       </div>
     
   </div>
@@ -635,7 +684,7 @@ Com_update:执行 update 的次数">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#查看本次连接信息"><span class="nav-number">1.</span> <span class="nav-text">查看本次连接信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看服务器提供的状态信息"><span class="nav-number">2.</span> <span class="nav-text">查看服务器提供的状态信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-EXPLAIN-分析-SQL-语句的执行计划"><span class="nav-number">3.</span> <span class="nav-text">通过 EXPLAIN 分析 SQL 语句的执行计划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-show-profile-分析-SQL-执行详细时间"><span class="nav-number">4.</span> <span class="nav-text">通过 show profile 分析 SQL 执行详细时间</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#查看本次连接信息"><span class="nav-number">1.</span> <span class="nav-text">查看本次连接信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看服务器提供的状态信息"><span class="nav-number">2.</span> <span class="nav-text">查看服务器提供的状态信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-EXPLAIN-分析-SQL-语句的执行计划"><span class="nav-number">3.</span> <span class="nav-text">通过 EXPLAIN 分析 SQL 语句的执行计划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-show-profile-分析-SQL-执行详细时间"><span class="nav-number">4.</span> <span class="nav-text">通过 show profile 分析 SQL 执行详细时间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql-中使用索引的场景"><span class="nav-number">5.</span> <span class="nav-text">Mysql 中使用索引的场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存在索引但是不能使用索引的场景"><span class="nav-number">6.</span> <span class="nav-text">存在索引但是不能使用索引的场景</span></a></li></ol></div>
             
 
           </div>
