@@ -112,7 +112,7 @@ show [session|global] status
 Com_select:执行 select 操作的次数，一次查询值累加 1；
 Com_Insert:执行 insert 操作的次数；
 Com_update:执行 update 的次数">
-<meta property="og:updated_time" content="2017-06-16T07:19:02.144Z">
+<meta property="og:updated_time" content="2017-06-16T07:19:48.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql 优化常见命令">
 <meta name="twitter:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
@@ -448,8 +448,9 @@ Com_update:执行 update 的次数">
 <li>Innodb_rows_updated:执行 update 操作更新的行数；</li>
 <li>Innodb_rows_deleted:执行 delete操作删除的行数；</li>
 <li>Com_commit:事务提交次数；</li>
-<li>Com_rollback:事务回滚的次数；<br>通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。</li>
+<li>Com_rollback:事务回滚的次数；</li>
 </ol>
+<p>通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。</p>
 
       
     </div>
