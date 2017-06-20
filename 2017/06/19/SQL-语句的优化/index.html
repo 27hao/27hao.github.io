@@ -104,7 +104,7 @@ alter table tab_name disable keys;load data infile ‘data.txt’ into table tab
 
 
 上述设置只对 MyISAM有用，对 InnoDB 表无用，因为 Inn">
-<meta property="og:updated_time" content="2017-06-19T15:38:59.599Z">
+<meta property="og:updated_time" content="2017-06-20T07:26:37.843Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL 语句的优化">
 <meta name="twitter:description" content="大批量插入数据
@@ -445,7 +445,27 @@ alter table tab_name disable keys;load data infile ‘data.txt’ into table tab
 <li>如果进行批量插入，可以提高 bulk_insert_buffer_size 的值（只对 MyISAM 表使用）；</li>
 <li>从一个文本载入数据时，load 比 insert 大约快 20 倍。</li>
 </ol>
-<p># </p>
+<h1 id="优化分页查询"><a href="#优化分页查询" class="headerlink" title="优化分页查询"></a>优化分页查询</h1><p>一般分页查询时，都会用到“limit 1000,20”类似的语句，但这样 Mysql 是读取 1020 条记录，然后再返回最后 20 条，这样就耗时太大；</p>
+<ol>
+<li>在索引上完成排序分页操作，最后根据主键关联会原表要查询的列；<blockquote>
+<p>select film_id, description from film order by title limit 50,5;<br>SELECT a.film_id, a.description from film a inner join (select film_id from film ORDER BY title limit 50,5)b on a.film_id=b.film_id;</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="常用-SQL-技巧"><a href="#常用-SQL-技巧" class="headerlink" title="常用 SQL 技巧"></a>常用 SQL 技巧</h1><ol>
+<li>运用正则表达式<blockquote>
+<p>select * from table where col reqexp ‘exp’;</p>
+</blockquote>
+</li>
+<li>用 rand() 提取随机行<blockquote>
+<p>select * from table order by rand() limit n;</p>
+</blockquote>
+</li>
+<li>利用 group by 的 with rollup 字句可以查询出分组的聚合信息<blockquote>
+<p>select col1,col2,sum(col3) from table group by col1;<br>select col1,col2,sum(col3) from table group by col1 with rollup;</p>
+</blockquote>
+</li>
+</ol>
 
       
     </div>
@@ -613,7 +633,7 @@ alter table tab_name disable keys;load data infile ‘data.txt’ into table tab
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大批量插入数据"><span class="nav-number">1.</span> <span class="nav-text">大批量插入数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化-insert-语句"><span class="nav-number">2.</span> <span class="nav-text">优化 insert 语句</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大批量插入数据"><span class="nav-number">1.</span> <span class="nav-text">大批量插入数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化-insert-语句"><span class="nav-number">2.</span> <span class="nav-text">优化 insert 语句</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化分页查询"><span class="nav-number">3.</span> <span class="nav-text">优化分页查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用-SQL-技巧"><span class="nav-number">4.</span> <span class="nav-text">常用 SQL 技巧</span></a></li></ol></div>
             
 
           </div>
