@@ -94,7 +94,7 @@ Filter它使用户可以改变一个 request和修改一个response. Filter 不�
 <meta property="og:site_name" content="27号's Blog">
 <meta property="og:description" content="web.xml 的加载顺序是：context-param -&amp;gt; listener -&amp;gt; filter -&amp;gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
 Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个req">
-<meta property="og:updated_time" content="2017-07-24T14:21:58.280Z">
+<meta property="og:updated_time" content="2017-07-24T14:23:46.973Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaEE中servlet，filter，listener解析">
 <meta name="twitter:description" content="web.xml 的加载顺序是：context-param -&amp;gt; listener -&amp;gt; filter -&amp;gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
@@ -405,7 +405,7 @@ Filter它使用户可以改变一个 request和修改一个response. Filter 不�
 
       
         <p>web.xml 的加载顺序是：context-param -&gt; listener -&gt; filter -&gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。</p>
-<h1 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h1><p>它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个request到达servlet之前预处理request,也可以在离开 servlet时处理response.换种说法,filter其实是一个”servlet chaining”(servlet 链).</p>
+<h1 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h1><p>它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个request到达servlet之前预处理request,也可以在离开 servlet时处理response.换种说法,filter其实是一个”servlet chaining”(servlet 链).我们可以利用它来转换编码，权限验证等功能。</p>
 <ol>
 <li>在 servlet 之前调用；</li>
 <li>在 servlet 调用之前检查 request;</li>

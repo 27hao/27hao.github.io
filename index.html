@@ -408,11 +408,10 @@
         
           
           web.xml 的加载顺序是：context-param -&gt; listener -&gt; filter -&gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
-Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个request到达servlet之前预处理request,也可以在离开 servlet时处理response.换种说法,filter其实是一个”servlet chaining”(servlet 链).
+Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个request到达servlet之前预处理request,也可以在离开 servlet时处理response.换种说法,filter其实是一个”servlet chaining”(servlet 链).我们可以利用它来转换编码，权限验证等功能。
 
 在 servlet 之前调用；
-在 servlet 调用之前检查 request;
-根据需要修改 r
+在 servlet 调用之
           ...
           <!--noindex-->
           <div class="post-button text-center">
