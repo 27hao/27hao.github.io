@@ -86,15 +86,19 @@
 
 
 
-<meta name="description" content="Web后端开发，安卓开发，java，python爱好者">
-<meta property="og:type" content="website">
-<meta property="og:title" content="27号's Blog">
-<meta property="og:url" content="http://bclearn.cn/tags/Mysql/index.html">
+<meta name="description" content="web.xml 的加载顺序是：context-param -&amp;gt; listener -&amp;gt; filter -&amp;gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
+Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个req">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaEE中servlet，filter，listener解析">
+<meta property="og:url" content="http://bclearn.cn/2017/07/24/JavaEE中servlet，filter，listener解析/index.html">
 <meta property="og:site_name" content="27号's Blog">
-<meta property="og:description" content="Web后端开发，安卓开发，java，python爱好者">
+<meta property="og:description" content="web.xml 的加载顺序是：context-param -&amp;gt; listener -&amp;gt; filter -&amp;gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
+Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个req">
+<meta property="og:updated_time" content="2017-07-24T14:21:58.280Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="27号's Blog">
-<meta name="twitter:description" content="Web后端开发，安卓开发，java，python爱好者">
+<meta name="twitter:title" content="JavaEE中servlet，filter，listener解析">
+<meta name="twitter:description" content="web.xml 的加载顺序是：context-param -&amp;gt; listener -&amp;gt; filter -&amp;gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。
+Filter它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个req">
 
 
 
@@ -122,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://bclearn.cn/tags/Mysql/"/>
+  <link rel="canonical" href="http://bclearn.cn/2017/07/24/JavaEE中servlet，filter，listener解析/"/>
 
 
 
 
 
-  <title> 标签: Mysql | 27号's Blog </title>
+  <title> JavaEE中servlet，filter，listener解析 | 27号's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +162,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -283,46 +287,192 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        Mysql
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://bclearn.cn/2017/07/24/JavaEE中servlet，filter，listener解析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="27号">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="27号's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="27号's Blog" src="">
+    </span>
+  </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                JavaEE中servlet，filter，listener解析
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-24T21:59:43+08:00">
+                2017-07-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/24/JavaEE中servlet，filter，listener解析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/24/JavaEE中servlet，filter，listener解析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p>web.xml 的加载顺序是：context-param -&gt; listener -&gt; filter -&gt; servlet ，而同个类型之间的实际程序调用的时候的顺序是根据对应的 mapping 的顺序进行调用的。</p>
+<h1 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h1><p>它使用户可以改变一个 request和修改一个response. Filter 不是一个servlet,它不能产生一个response,它能够在一个request到达servlet之前预处理request,也可以在离开 servlet时处理response.换种说法,filter其实是一个”servlet chaining”(servlet 链).</p>
+<ol>
+<li>在 servlet 之前调用；</li>
+<li>在 servlet 调用之前检查 request;</li>
+<li>根据需要修改 request 和 response;</li>
+<li>在 servlet 调用之后截获，继续修改相应数据;</li>
+</ol>
+<p>在实现 filter 中 doFilter 方法时必须调用 chain.doFilter(req,resp) 表示调用下一个 filter 或者最终请求。</p>
+<h1 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h1><p>Servlet是使用Java Servlet 应用程序设计接口（API）及相关类和方法的 Java 程序。除了 java Servlet API，Servlet 还可以使用用以扩展和添加到 API 的 Java 类软件包。Servlet 在启用 Java 的 Web 服务器上或应用服务器上运行并扩展了该服务器的能力。Java servlet对于Web服务器就好象Java applet对于Web浏览器。Servlet装入Web服务器并在Web服务器内执行，而applet装入Web浏览器并在Web浏览器内执行。Java Servlet API 定义了一个servlet 和Java使能的服务器之间的一个标准接口，这使得Servlets具有跨服务器平台的特性。</p>
+<h3 id="它的拦截规则"><a href="#它的拦截规则" class="headerlink" title="它的拦截规则"></a>它的拦截规则</h3><p>当一个请求发送到servlet容器的时候，容器先会将请求的url减去当前应用上下文的路径作为servlet的映射url，比如我访问的是<a href="http://localhost/test/aaa.html，我的应用上下文是test，容器会将http://localhost/test去掉，剩下的/aaa.html部分拿来做servlet的映射匹配。这个映射匹配过程是有顺序的，而且当有一个servlet匹配成功以后，就不会去理会剩下的servlet了（filter不同，后文会提到）。其匹配规则和顺序如下：" target="_blank" rel="external">http://localhost/test/aaa.html，我的应用上下文是test，容器会将http://localhost/test去掉，剩下的/aaa.html部分拿来做servlet的映射匹配。这个映射匹配过程是有顺序的，而且当有一个servlet匹配成功以后，就不会去理会剩下的servlet了（filter不同，后文会提到）。其匹配规则和顺序如下：</a></p>
+<ol>
+<li>精确路径匹配。例子：比如servletA 的url-pattern为 /test，servletB的url-pattern为 /* ，这个时候，如果我访问的url为<a href="http://localhost/test" target="_blank" rel="external">http://localhost/test</a> ，这个时候容器就会先 进行精确路径匹配，发现/test正好被servletA精确匹配，那么就去调用servletA，也不会去理会其他的servlet了。</li>
+<li>最长路径匹配。例子：servletA的url-pattern为/test/<em>，而servletB的url-pattern为/test/a/</em>，此时访问<a href="http://localhost/test/a时，容器会选择路径最长的servlet来匹配，也就是这里的servletB。" target="_blank" rel="external">http://localhost/test/a时，容器会选择路径最长的servlet来匹配，也就是这里的servletB。</a></li>
+<li>扩展匹配，如果url最后一段包含扩展，容器将会根据扩展选择合适的servlet。例子：servletA的url-pattern：*.action</li>
+<li>如果前面三条规则都没有找到一个servlet，容器会根据url选择对应的请求资源。如果应用定义了一个default servlet，则容器会将请求丢给default servlet</li>
+</ol>
+<h1 id="Listener"><a href="#Listener" class="headerlink" title="Listener"></a>Listener</h1><p>它是基于观察者模式设计的。目前 Servlet 中提供了 5 种两类事件的观察者接口，我们实现它们，然后在 web.xml 里配置好就可以使用监听器了，它们分别是：4 个 EventListeners 类型的，ServletContextAttributeListener、ServletRequestAttributeListener、ServletRequestListener、HttpSessionAttributeListener 和 2 个 LifecycleListeners 类型的，ServletContextListener、HttpSessionListener。作为 Servlet 的监听器，它可以监听客户端的请求，服务端的操作等。比如监听在线用户数量：当增加一个 session 时，就触发 sessionCreated 方法，将人数加 1。</p>
 
-      <h2 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/06/16/Mysql-优化常见命令/" itemprop="url">
-              
-                <span itemprop="name">Mysql 优化</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-16T14:55:24+08:00"
-              content="2017-06-16" >
-          06-16
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/19/SQL-语句的优化/" rel="next" title="SQL 语句的优化">
+                <i class="fa fa-chevron-left"></i> SQL 语句的优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -330,6 +480,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/24/JavaEE中servlet，filter，listener解析/"
+           data-title="JavaEE中servlet，filter，listener解析" data-url="http://bclearn.cn/2017/07/24/JavaEE中servlet，filter，listener解析/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -349,8 +507,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -406,6 +573,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Filter"><span class="nav-number">1.</span> <span class="nav-text">Filter</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet"><span class="nav-number">2.</span> <span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#它的拦截规则"><span class="nav-number">2.0.1.</span> <span class="nav-text">它的拦截规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Listener"><span class="nav-number">3.</span> <span class="nav-text">Listener</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
@@ -505,6 +688,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
