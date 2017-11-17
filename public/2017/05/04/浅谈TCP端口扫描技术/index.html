@@ -1,0 +1,875 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="RL4DsmekajSA0cAzcyT7XnP-WWOdEzDDhD5oN-9ePhU" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="端口扫描描述在一般的网络攻击或者说渗透测试中，首要任务也是最重要的任务就是踩点，也就是对目标系统信息的收集，而端口扫描就是踩点中最重要的一项。端口扫描不仅用于踩点，并且经常用于批量抓取肉鸡，就是在扫描到端口开放后就用弱口令尝试登录系统，最后将这些肉鸡用于 ddos 等其它领域。互联网中常用的端口有 ftp 服务端口 21 ，ssh 服务端口 22 ，TELNET 远程登录服务 23 ，DNS 服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈TCP端口扫描技术">
+<meta property="og:url" content="http://bclearn.cn/2017/05/04/浅谈TCP端口扫描技术/index.html">
+<meta property="og:site_name" content="27号's Blog">
+<meta property="og:description" content="端口扫描描述在一般的网络攻击或者说渗透测试中，首要任务也是最重要的任务就是踩点，也就是对目标系统信息的收集，而端口扫描就是踩点中最重要的一项。端口扫描不仅用于踩点，并且经常用于批量抓取肉鸡，就是在扫描到端口开放后就用弱口令尝试登录系统，最后将这些肉鸡用于 ddos 等其它领域。互联网中常用的端口有 ftp 服务端口 21 ，ssh 服务端口 22 ，TELNET 远程登录服务 23 ，DNS 服务">
+<meta property="og:updated_time" content="2017-05-04T05:18:27.363Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈TCP端口扫描技术">
+<meta name="twitter:description" content="端口扫描描述在一般的网络攻击或者说渗透测试中，首要任务也是最重要的任务就是踩点，也就是对目标系统信息的收集，而端口扫描就是踩点中最重要的一项。端口扫描不仅用于踩点，并且经常用于批量抓取肉鸡，就是在扫描到端口开放后就用弱口令尝试登录系统，最后将这些肉鸡用于 ddos 等其它领域。互联网中常用的端口有 ftp 服务端口 21 ，ssh 服务端口 22 ，TELNET 远程登录服务 23 ，DNS 服务">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bclearn.cn/2017/05/04/浅谈TCP端口扫描技术/"/>
+
+
+
+
+
+  <title> 浅谈TCP端口扫描技术 | 27号's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=60642713";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">27号's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description"></h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://bclearn.cn/2017/05/04/浅谈TCP端口扫描技术/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="27号">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="27号's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="27号's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                浅谈TCP端口扫描技术
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-04T10:09:43+08:00">
+                2017-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络技术/" itemprop="url" rel="index">
+                    <span itemprop="name">网络技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/04/浅谈TCP端口扫描技术/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/04/浅谈TCP端口扫描技术/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="端口扫描描述"><a href="#端口扫描描述" class="headerlink" title="端口扫描描述"></a>端口扫描描述</h2><p>在一般的网络攻击或者说渗透测试中，首要任务也是最重要的任务就是踩点，也就是对目标系统信息的收集，而端口扫描就是踩点中最重要的一项。<br>端口扫描不仅用于踩点，并且经常用于批量抓取肉鸡，就是在扫描到端口开放后就用弱口令尝试登录系统，最后将这些肉鸡用于 ddos 等其它领域。互联网中常用的端口有 ftp 服务端口 21 ，ssh 服务端口 22 ，TELNET 远程登录服务 23 ，DNS 服务端口 53 ，http 服务端口 80，windous 远程桌面服务 3389 端口，SQL Server 服务端口 1433 ，mysql 端口 3306 。<br>在网络中，你的系统开放了几个端口，也就意味着你为别人开了几扇门,所以网络攻击是离不开端口的，黑客利用这些开放的端口就能进入你的系统，所以一个系统开放越少的端口就越安全。<br>我们在计算机网络课程中都学过，端口这个概念来自于OSI模型中的传输层，用于系统中各个应用程序与外界交流。而传输层有TCP和UDP协议，所以端口也就分为TCP端口和UDP端口，现在我着重讲解的是TCP端口扫描。</p>
+<h2 id="TCP-端口扫描技术"><a href="#TCP-端口扫描技术" class="headerlink" title="TCP 端口扫描技术"></a>TCP 端口扫描技术</h2><p>TCP 端口扫描技术的基础是 TCP 协议中的三次握手以及四次挥手，这里面就涉及了 TCP 首头中的几个控制位，URG，ACK，PSH，<br>RST，SYN，FIN。<br>一次完整的 TCP 连接的步骤：</p>
+<ol>
+<li>客户端发起连接将数据报中将 TCP 首头的 SYN 控制位置为 1，表明这是一个连接请求 。</li>
+<li>服务端接受到连接请求，如果这个端口是开放的，就将回复的数据报 TCP 首头中 SYN 置为1，ACK 位也置位 1，表明接受请求并且也请求连接。如果这个端口没有开放，就将 RST 位置为1，表明这个连接失败。</li>
+<li>客户端接受到服务器的回复，如果 SYN 和 ACK 位为1，就将 RST 位和 ACK 位置为 1 ，表明接受请求并且连接完毕。如果 RST 位为1，说明连接失败。</li>
+</ol>
+<p>而每种 TCP 端口扫描技术都是在这上面动手脚。</p>
+<h3 id="TCP-全连接"><a href="#TCP-全连接" class="headerlink" title="TCP 全连接"></a>TCP 全连接</h3><p>全 TCP 连接是 TCP 端口扫描的基础。它是我们最熟悉的，我们经常写的网络程序都会用到，它的原理很简单，就是一个普通的完整的 sockt 连接，也就是完整的三次握手和四次挥手。如果连接成功就说明这个端口是开放的，反之则是关闭的。虽然这种扫描技术简单且容易实现并且无需任何特殊权限，但是这种扫描容易被检测出来并且很慢，所以很不安全，用的很少。</p>
+<h3 id="SYN-扫描"><a href="#SYN-扫描" class="headerlink" title="SYN 扫描"></a>SYN 扫描</h3><p>SYN 扫描也被称为半开放扫描，它和 TCP 全连接差不多，只是如果端口开放，在第三次握手的时候只将 RST 位置为 1 。直接就将连接断开了，这样就可以绕开很多防火墙，检测出来的几率大大减小，就安全很多并且比较准确，所以这种方式用的比较多。</p>
+<h3 id="FIN-扫描"><a href="#FIN-扫描" class="headerlink" title="FIN 扫描"></a>FIN 扫描</h3><p>FIN 扫描是一种隐藏连接扫描，它和前两种有比较大的区别，因为前两种都是在建立连接是操作的，而这种扫描方式是基于断开连接的。它将 TCP 首头中 FIN 控制位置为 1 ，请求与服务器断开连接，如果服务器上这个端口关闭时，服务器会返回一个报文，并且 RST 位置为 1 。如果这个端口开放，因为并没有建立连接，何谈断开连接，所以服务器不会返回任何报文。而如果服务器返回一个 IMCP 报文，则表示这个报文被防火墙过滤了，所以这种方式很准确且速度比前两种快得多。</p>
+<h2 id="常见的端口扫描器"><a href="#常见的端口扫描器" class="headerlink" title="常见的端口扫描器"></a>常见的端口扫描器</h2><ul>
+<li>Nmap:Nmap 是一款用于网络发现和安全审计的网络安全工具，支持十几种端口扫描技术，当然它不仅用于端口扫描，它的功能很强大，基本是网络攻击的必备工具。</li>
+<li>Zmap:Zmap 是一款号称一个小时扫完全网的端口扫描器，它采用的是一种加强的 SYN 扫描技术。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/04/Maven将java项目打包成可独立运行的jar包/" rel="next" title="Maven将java项目打包成可独立运行的jar包">
+                <i class="fa fa-chevron-left"></i> Maven将java项目打包成可独立运行的jar包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/16/Mysql-优化常见命令/" rel="prev" title="Mysql 优化">
+                Mysql 优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/04/浅谈TCP端口扫描技术/"
+           data-title="浅谈TCP端口扫描技术" data-url="http://bclearn.cn/2017/05/04/浅谈TCP端口扫描技术/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="27号" />
+          <p class="site-author-name" itemprop="name">27号</p>
+          <p class="site-description motion-element" itemprop="description">Web后端开发，安卓开发，java，python爱好者</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#端口扫描描述"><span class="nav-number">1.</span> <span class="nav-text">端口扫描描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-端口扫描技术"><span class="nav-number">2.</span> <span class="nav-text">TCP 端口扫描技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-全连接"><span class="nav-number">2.1.</span> <span class="nav-text">TCP 全连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SYN-扫描"><span class="nav-number">2.2.</span> <span class="nav-text">SYN 扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FIN-扫描"><span class="nav-number">2.3.</span> <span class="nav-text">FIN 扫描</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的端口扫描器"><span class="nav-number">3.</span> <span class="nav-text">常见的端口扫描器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">27号</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"27hao"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

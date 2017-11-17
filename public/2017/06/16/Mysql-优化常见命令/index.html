@@ -1,0 +1,982 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="RL4DsmekajSA0cAzcyT7XnP-WWOdEzDDhD5oN-9ePhU" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mysql," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
+查看本次连接信息:
+status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
+
+Com_select:执行 select 操作的次数，一次查询值累加 1；
+Com_Insert:执行 insert 操作的次数；
+Com_update:执行 update 的次数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql 优化">
+<meta property="og:url" content="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/index.html">
+<meta property="og:site_name" content="27号's Blog">
+<meta property="og:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
+查看本次连接信息:
+status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
+
+Com_select:执行 select 操作的次数，一次查询值累加 1；
+Com_Insert:执行 insert 操作的次数；
+Com_update:执行 update 的次数">
+<meta property="og:updated_time" content="2017-06-16T13:58:51.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql 优化">
+<meta name="twitter:description" content="当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。
+查看本次连接信息:
+status
+
+查看服务器提供的状态信息:
+show [session|global] status
+
+
+Com_select:执行 select 操作的次数，一次查询值累加 1；
+Com_Insert:执行 insert 操作的次数；
+Com_update:执行 update 的次数">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/"/>
+
+
+
+
+
+  <title> Mysql 优化 | 27号's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=60642713";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">27号's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <h1 class="site-subtitle" itemprop="description"></h1>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="27号">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="27号's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="27号's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mysql 优化
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-16T14:55:24+08:00">
+                2017-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/16/Mysql-优化常见命令/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/16/Mysql-优化常见命令/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>当面对一个 SQL 性能问题时，我们应该从何处找到问题，哪里用的时间过多，我们才能着手优化。</p>
+<h1 id="查看本次连接信息"><a href="#查看本次连接信息" class="headerlink" title="查看本次连接信息:"></a>查看本次连接信息:</h1><blockquote>
+<p>status</p>
+</blockquote>
+<h1 id="查看服务器提供的状态信息"><a href="#查看服务器提供的状态信息" class="headerlink" title="查看服务器提供的状态信息:"></a>查看服务器提供的状态信息:</h1><blockquote>
+<p>show [session|global] status</p>
+</blockquote>
+<ol>
+<li>Com_select:执行 select 操作的次数，一次查询值累加 1；</li>
+<li>Com_Insert:执行 insert 操作的次数；</li>
+<li>Com_update:执行 update 的次数；</li>
+<li>Com_delete:执行 delete 的次数；</li>
+<li>Innodb_rows_read:执行 select 查询返回的行数；</li>
+<li>Innodb_rows_inserted:执行 insert 操作插入的行数;</li>
+<li>Innodb_rows_updated:执行 update 操作更新的行数；</li>
+<li>Innodb_rows_deleted:执行 delete操作删除的行数；</li>
+<li>Com_commit:事务提交次数；</li>
+<li>Com_rollback:事务回滚的次数；</li>
+<li>Handler_read_key:表明系统正在使用索引，越高越好；</li>
+<li>Handler_read_next:使用索引读取数据的次数；</li>
+<li>Handler_read_rnd_next:表示在数据文件读取数据的次数，如果值很大，说明应该使用索引。</li>
+</ol>
+<p>通过上述参数的值我们可以很容易的了解当前数据库是以插入更新为主还是以查询操作为主，以及各种类型的 SQL 大致执行比例是多少。对于更新操作的计数，是对执行次数的计数，无论是提交还是回滚都会计数。如果回滚非常频繁，意味着应用编写可能存在问题。</p>
+<h1 id="通过-EXPLAIN-分析-SQL-语句的执行计划"><a href="#通过-EXPLAIN-分析-SQL-语句的执行计划" class="headerlink" title="通过 EXPLAIN 分析 SQL 语句的执行计划"></a>通过 EXPLAIN 分析 SQL 语句的执行计划</h1><blockquote>
+<p>explain sql语句\G</p>
+</blockquote>
+<ul>
+<li>select_type: 表示 select 的类型，常见取值有 SIMPLE（简单表，没有使用表连接或子查询），PRIMARY（主查询），UNION（UNION 中的第二个或者后面的查询语句），SUBQUERY（子查询中的第一个 SELECT）等。</li>
+<li>type:表示 Mysql 在表中查询的方式，或者叫访问类型。ALL（全表扫描），index（索引全扫描，遍历整个索引），range（索引范围扫描，常见于比较符 &lt; &gt;等），ref（索引的前缀扫描，返回匹配某个单独值的记录），const/system（表中最多只有一个匹配行，根据主键或唯一索引查询时），速度依次变快。</li>
+<li>possible_keys:表示查询时可能用到的索引；</li>
+<li>key:表示实际用的索引；</li>
+<li>key_len:使用到索引字段的长度；</li>
+<li>rows:总共扫描了多少行；</li>
+</ul>
+<h1 id="通过-show-profile-分析-SQL-执行详细时间"><a href="#通过-show-profile-分析-SQL-执行详细时间" class="headerlink" title="通过 show profile 分析 SQL 执行详细时间"></a>通过 show profile 分析 SQL 执行详细时间</h1><blockquote>
+<p>select @@having_profiling; 查看是否支持 profile<br>set profiling=1; 开启 profile 功能<br>show profiles; 查看每个执行的 SQL 语句的 QUERY ID<br>show profile for query id; 查看该语句执行过程中每个状态的消耗时间<br>show profile [all|cpu|block|io|context|switch|page faults]查看在某个资源所耗时间</p>
+</blockquote>
+<h1 id="Mysql-中使用索引的场景"><a href="#Mysql-中使用索引的场景" class="headerlink" title="Mysql 中使用索引的场景"></a>Mysql 中使用索引的场景</h1><ul>
+<li>匹配全值，即对索引中的列都指定具体值。<blockquote>
+<p>select * from table where col1=’xxx’ and col2=’xxx’;其中col1，col2都有索引</p>
+</blockquote>
+</li>
+<li>匹配值的范围查询，对索引的值进行范围查找。<blockquote>
+<p>select * from table where col&gt;=1 and col&lt;=100;</p>
+</blockquote>
+</li>
+<li>匹配最左前缀，仅仅使用索引中的最左边列进行查找，比如 col1+col2+col3 字段的联合索引能被包含 col1,(col1,col2),(col1,col2,col3)的等值查询利用，不能被 col2,col3,(col2,col3)的等值查询利用。<blockquote>
+<p>select <em> from table where col1=’xxx’;<br>select </em> from table where col1=’xxx’ and col2=’xxx’;<br>select * from table where col1=’xxx’ and col2=’xxx’ and col3=’xxx’;</p>
+</blockquote>
+</li>
+<li>仅仅对索引进行查询，当查询的列都在索引的字段中。<blockquote>
+<p>select col1,col2,col3 from table;</p>
+</blockquote>
+</li>
+<li>匹配列前缀，仅仅使用索引的第一列，并且只包含索引第一列的开头部分进行查找。<blockquote>
+<p>select * from table where col like ‘xxxx%’;</p>
+</blockquote>
+</li>
+<li>索引匹配部分精确，其它部分范围匹配。<blockquote>
+<p>select * from table where col1=’xxx’ and col2&gt;=1 and col2&lt;=100;</p>
+</blockquote>
+</li>
+<li>使用 col is null 条件会使用索引<blockquote>
+<p>select * from table where col is null;</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="存在索引但是不能使用索引的场景"><a href="#存在索引但是不能使用索引的场景" class="headerlink" title="存在索引但是不能使用索引的场景"></a>存在索引但是不能使用索引的场景</h1><ul>
+<li>以%开头的like查询不能利用 B-Tree 索引。<blockquote>
+<p>select * from table where col like ‘%xxx’;</p>
+</blockquote>
+</li>
+<li>数据类型出现隐式转换是不会使用索引，特别是列类型为字符串时，一定要用引号引起来。<blockquote>
+<p>select * from table where col=123; 其中col列类型为字符串</p>
+</blockquote>
+</li>
+<li>复合索引中，如果查询条件中不包含索引列的最左部分，不使用索引。<blockquote>
+<p>select * from table where col2=’xxx’ and col3=’xxx’;</p>
+</blockquote>
+</li>
+<li>如果 Mysql 估计使用索引比全表扫描更慢，则不使用索引。</li>
+<li>用 or 分割开的条件，如果 or 前的条件中的列有索引，而后面没有，同样不会使用索引。<blockquote>
+<p>select * from table where col1=’xxx’ or col2=’xxx’;其中 col1 有索引，而 col2 没有索引</p>
+</blockquote>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/04/浅谈TCP端口扫描技术/" rel="next" title="浅谈TCP端口扫描技术">
+                <i class="fa fa-chevron-left"></i> 浅谈TCP端口扫描技术
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/19/SQL-语句的优化/" rel="prev" title="SQL 语句的优化">
+                SQL 语句的优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/06/16/Mysql-优化常见命令/"
+           data-title="Mysql 优化" data-url="http://bclearn.cn/2017/06/16/Mysql-优化常见命令/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="27号" />
+          <p class="site-author-name" itemprop="name">27号</p>
+          <p class="site-description motion-element" itemprop="description">Web后端开发，安卓开发，java，python爱好者</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#查看本次连接信息"><span class="nav-number">1.</span> <span class="nav-text">查看本次连接信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看服务器提供的状态信息"><span class="nav-number">2.</span> <span class="nav-text">查看服务器提供的状态信息:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-EXPLAIN-分析-SQL-语句的执行计划"><span class="nav-number">3.</span> <span class="nav-text">通过 EXPLAIN 分析 SQL 语句的执行计划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过-show-profile-分析-SQL-执行详细时间"><span class="nav-number">4.</span> <span class="nav-text">通过 show profile 分析 SQL 执行详细时间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql-中使用索引的场景"><span class="nav-number">5.</span> <span class="nav-text">Mysql 中使用索引的场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存在索引但是不能使用索引的场景"><span class="nav-number">6.</span> <span class="nav-text">存在索引但是不能使用索引的场景</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">27号</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"27hao"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
